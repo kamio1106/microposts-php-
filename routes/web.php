@@ -11,8 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'MicropostsController@index');
+
+
+// ログインしている状態であればindexとshowのルーターが機能する。
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
+    Route::resource('microposts', 'MicropostsController', ['only' => ['store', 'destroy']]);
 });
 
 
@@ -25,7 +30,3 @@ Route::post('login', 'Auth\LoginController@login')->name('login.post');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 
-// ログインしている状態であればindexとshowのルーターが機能する。
-Route::group(['middleware' => ['auth']], function () {
-    Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
-});
